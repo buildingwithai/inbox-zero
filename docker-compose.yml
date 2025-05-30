@@ -45,20 +45,34 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.prod
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - NODE_ENV=development
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL_INTERNAL=http://localhost:3000
+      - NEXTAUTH_SECRET=45de15e79cc73300fb246c1a7631ec5ec937e5995b2e93294dd158d9805027d6
+      - GOOGLE_CLIENT_ID=912917739814-au9bs0mqjioa3e4ktvqlchs2n21am6oq.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-inboxzero}?schema=public
+      - DIRECT_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-inboxzero}?schema=public
+      - UPSTASH_REDIS_URL=http://serverless-redis-http:80
+      - UPSTASH_REDIS_TOKEN=${UPSTASH_REDIS_TOKEN}
     env_file:
       - ./apps/web/.env
     depends_on:
       - db
       - redis
     ports:
-      - ${WEB_PORT:-3000}:3000
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - ./apps/web/.env:/app/apps/web/.env
     networks:
       - inbox-zero-network
-    environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-inboxzero}?schema=public"
-      DIRECT_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-inboxzero}?schema=public"
-      UPSTASH_REDIS_URL: "http://serverless-redis-http:80"
-      UPSTASH_REDIS_TOKEN: "${UPSTASH_REDIS_TOKEN}"
+    command: sh -c "npm install && npx prisma generate && npx prisma migrate deploy && npm run dev"
 
 volumes:
   database-data:

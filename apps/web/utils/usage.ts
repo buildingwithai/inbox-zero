@@ -24,20 +24,11 @@ export async function saveAiUsage({
   const cost = calcuateCost(model, usage);
 
   try {
-    return Promise.all([
-      publishAiCall({
-        userId: email,
-        provider,
-        model,
-        totalTokens: usage.totalTokens,
-        completionTokens: usage.completionTokens,
-        promptTokens: usage.promptTokens,
-        cost,
-        timestamp: Date.now(),
-        label,
-      }),
-      saveUsage({ email, cost, usage }),
-    ]);
+    // Removed publishAiCall to Tinybird as it's no longer a requirement
+    await saveUsage({ email, cost, usage });
+    // Depending on what saveUsage returns and what the caller expects,
+    // you might need to adjust the return value here. For now, assuming void or that saveUsage's return is not critical.
+    return;
   } catch (error) {
     logger.error("Failed to save usage", { error });
   }

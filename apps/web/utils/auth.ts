@@ -55,6 +55,7 @@ export const getAuthOptions: (options?: {
   adapter: {
     ...PrismaAdapter(prisma),
     linkAccount: async (data): Promise<void> => {
+      logger.info("[DEBUG] linkAccount called with data:", { data });
       logger.info("[linkAccount] Received data:", {
         provider: data.provider,
         providerAccountId: data.providerAccountId,
@@ -161,13 +162,18 @@ export const getAuthOptions: (options?: {
   // and: https://github.com/nextauthjs/next-auth-refresh-token-example/blob/main/pages/api/auth/%5B...nextauth%5D.js
   callbacks: {
     jwt: async ({ token, user, account }): Promise<JWT> => {
+      logger.info("[DEBUG] jwt callback invoked. Account object:", { account });
+      logger.info("[DEBUG] jwt callback. User object:", { user });
       // Signing in
       // on first sign in `account` and `user` are defined, thereafter only `token` is defined
       if (account && user) {
         // Google sends us `refresh_token` only on first sign in so we need to save it to the database then
         // On future log ins, we retrieve the `refresh_token` from the database
         if (account.refresh_token) {
-          logger.info("Saving refresh token", { email: token.email });
+          logger.info("Saving refresh token", {
+            email: token.email,
+            providerAccountId: account?.providerAccountId,
+          });
           await saveTokens({
             tokens: {
               access_token: account.access_token,
@@ -324,6 +330,10 @@ const refreshAccessToken = async (token: JWT): Promise<JWT> => {
   }
 
   if (!account?.refresh_token) {
+    logger.info(
+      "Refresh token not found in account object, attempting to retrieve from DB",
+      { providerAccountId: account?.providerAccountId },
+    );
     logger.error("No refresh token found in database", {
       email: token.email,
       userId: account.userId,

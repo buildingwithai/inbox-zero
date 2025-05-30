@@ -65,6 +65,7 @@ export function CategoriesSetup({
     async (data: CreateRulesOnboardingBody) => {
       // runs in background so we can move on to next step faster
       createRulesOnboardingAction(emailAccountId, data);
+      markOnboardingAsCompleted(ASSISTANT_ONBOARDING_COOKIE);
       router.push(prefixPath(emailAccountId, NEXT_URL));
     },
     [emailAccountId, router],
