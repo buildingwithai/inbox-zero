@@ -1,5 +1,11 @@
 {
   "buildCommand": "cd ../.. && turbo run build --filter={apps/web}...",
   "installCommand": "pnpm install",
-  "ignoreCommand": ""
+  "ignoreCommand": "",
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }

@@ -47,6 +47,81 @@ Learn more in our [docs](https://docs.getinboxzero.com).
 |  ![Gmail Client](.github/screenshots/email-client.png)   | ![Bulk Unsubscriber](.github/screenshots/bulk-unsubscriber.png) |
 |                      _Gmail client_                      |                       _Bulk Unsubscriber_                       |
 
+## Environment Setup
+
+### Prerequisites
+
+- Node.js 18+ and pnpm installed
+- A Vercel account (for deployment)
+- A Vercel Postgres database (or another PostgreSQL database)
+
+### Local Development Setup
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/inbox-zero.git
+   cd inbox-zero
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+
+   ```bash
+   # Copy the example environment file
+   cp apps/web/.env.example apps/web/.env
+
+   # Run the setup script to generate secure secrets
+   # On Windows (PowerShell):
+   .\scripts\setup-env.ps1
+
+   # Or on macOS/Linux:
+   # chmod +x ./scripts/setup-env.ps1
+   # ./scripts/setup-env.ps1
+   ```
+
+4. **Update the .env file**
+
+   - Open `apps/web/.env` in a text editor
+   - Update the following required values:
+     - Database connection strings
+     - OAuth credentials (Google, GitHub, etc.)
+     - API keys for services you're using
+
+5. **Start the development server**
+   ```bash
+   cd apps/web
+   pnpm dev
+   ```
+
+### Environment Variables Reference
+
+Key environment variables you'll need to set:
+
+| Variable               | Description                                  | Required        |
+| ---------------------- | -------------------------------------------- | --------------- |
+| `NEXTAUTH_SECRET`      | Secret for NextAuth.js                       | Yes             |
+| `NEXTAUTH_URL`         | Your app's URL (e.g., http://localhost:3000) | Yes             |
+| `GOOGLE_CLIENT_ID`     | Google OAuth client ID                       | For Google Auth |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret                   | For Google Auth |
+| `DATABASE_URL`         | PostgreSQL connection string                 | Yes             |
+| `UPSTASH_REDIS_URL`    | Redis connection URL                         | For caching     |
+| `OPENAI_API_KEY`       | OpenAI API key                               | For AI features |
+
+### Production Deployment
+
+When deploying to production:
+
+1. Set all required environment variables in your hosting provider
+2. Ensure `NODE_ENV=production` is set
+3. Run database migrations before starting the app
+4. Set up proper SSL/TLS for all connections
+
 ## Demo Video
 
 [![Inbox Zero demo](/video-thumbnail.png)](http://www.youtube.com/watch?v=hfvKvTHBjG0)
