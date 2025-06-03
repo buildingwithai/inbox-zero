@@ -197,6 +197,59 @@ The empty `Account` table confirms why the `OAuthAccountNotLinked` error occurs.
 
 The browser console message "Account already attached to another user" remains somewhat anomalous if the `Account` table is truly empty, but could be a misleading error message or an internal check failing before the database write attempt.
 
+---
+
+## Error: Git Push Failed - Secrets Detected by GitHub
+
+**Timestamp:** 2025-05-30T14:40:50-07:00 (Approximate time of `git push` failure)
+
+**Command:** `git push origin main`
+
+**Error Message (from `git push` output):**
+
+```log
+remote:        https://github.com/buildingwithai/inbox-zero/security/secret-scanning/unblock-secret/2xpgKFL4j0YBH0a0IXXs2TEhNpb
+remote:
+remote:
+remote:       —— Google OAuth Client Secret ————————————————————————
+remote:        locations:
+remote:          - commit: 0195ee0fa0c0128c9ff9b6a6ddda0d1b13b56bab
+remote:            path: docker-compose.yml:56
+remote:
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.
+remote:        https://github.com/buildingwithai/inbox-zero/security/secret-scanning/unblock-secret/2xpgK9gFtzis3tKedOXcl05BQal
+remote:
+remote:
+remote:
+To https://github.com/buildingwithai/inbox-zero.git
+ ! [remote rejected]   main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/buildingwithai/inbox-zero.git'
+```
+
+**Analysis:**
+The `git push` command failed because GitHub's automated secret scanning detected a potential "Google OAuth Client Secret" in the file `docker-compose.yml` at line 56, within commit `0195ee0fa0c0128c9ff9b6a6ddda0d1b13b56bab`.
+Committing secrets directly to a repository is a security risk. GitHub blocked the push to prevent accidental exposure.
+
+**Proposed Solution (Attempt 1):**
+
+1. **Inspect `docker-compose.yml`:** Review line 56 to confirm the nature of the detected secret.
+2. **Remove/Replace Secret:**
+   - If it's a placeholder or example value, replace it with a generic placeholder (e.g., `YOUR_GOOGLE_OAUTH_CLIENT_SECRET_HERE`) or remove it if not essential for local development setup documented in the compose file.
+   - If it's a real, sensitive secret, it **must be removed** from the file. Secrets should be managed via environment variables (e.g., loaded from a `.env` file that is in `.gitignore`) or a dedicated secrets management tool.
+3. **Amend the Commit:** Since the secret is in the last commit, use `git commit --amend --no-edit` (to keep the same commit message) after staging the changes to `docker-compose.yml`. This will update the commit `0195ee0fa0c0128c9ff9b6a6ddda0d1b13b56bab`.
+4. **Verify `.gitignore`:** Ensure that files containing actual secrets (like `.env` files, including `apps/web/.env`) are listed in `.gitignore` to prevent them from being committed.
+5. **Retry Push:** Attempt `git push origin main` again.
+6. **Address Other Potential Secrets:** Review other configuration files for any other hardcoded secrets and apply the same remediation steps.
+
+**Status:** Resolved.
+
+**Resolution Summary (Attempt 1):**
+The hardcoded `GOOGLE_CLIENT_SECRET` in `docker-compose.yml` (line 56) was replaced with an environment variable placeholder `${GOOGLE_CLIENT_SECRET}`.
+It was confirmed that `apps/web/.env` (which should contain the actual secret) is correctly ignored by `.gitignore`.
+The change to `docker-compose.yml` was staged (`git add docker-compose.yml`).
+The commit `411731a7` (which was the HEAD of the main branch and contained the previous attempt to sync changes) was amended (`git commit --amend --no-edit`) to include this fix.
+The amended commit was successfully pushed to `origin main` on 2025-05-30.
+
 **Update (2025-05-29 Evening) - Browser Console Output Changed:**
 
 Upon a new sign-in attempt, the browser console and URL showed a different error:
