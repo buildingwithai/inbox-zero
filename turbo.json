@@ -1,6 +1,22 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "globalEnv": [
+    "POSTGRES_PRISMA_URL",
+    "POSTGRES_URL_NON_POOLING",
+    "POSTGRES_URL",
+    "DATABASE_URL_UNPOOLED",
+    "PGHOST",
+    "PGHOST_UNPOOLED",
+    "PGUSER",
+    "PGDATABASE",
+    "PGPASSWORD",
+    "POSTGRES_USER",
+    "POSTGRES_PASSWORD",
+    "POSTGRES_DATABASE",
+    "POSTGRES_URL_NO_SSL",
+    "POSTGRES_HOST"
+  ],
   "tasks": {
     "build": {
       "env": [
