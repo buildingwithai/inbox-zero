@@ -5,11 +5,10 @@ generator client {
   binaryTargets   = ["native", "rhel-openssl-1.0.x"]
 }
 
-// TEMPORARY HARDCODED VALUES FOR TESTING - REMOVE AFTER TESTING
 datasource db {
   provider  = "postgresql"
-  url       = "postgres://neondb_owner:npg_ehOAf0s8GuTl@ep-round-voice-a4de2lyf-pooler.us-east-1.aws.neon.tech/neondb?connect_timeout=15&sslmode=require"
-  directUrl = "postgres://neondb_owner:npg_ehOAf0s8GuTl@ep-round-voice-a4de2lyf.us-east-1.aws.neon.tech/neondb?sslmode=require"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Account {
