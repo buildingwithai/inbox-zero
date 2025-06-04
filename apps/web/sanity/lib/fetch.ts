@@ -2,7 +2,7 @@ import "server-only";
 
 import type { QueryParams } from "@sanity/client";
 import { draftMode } from "next/headers";
-import { client } from "./client";
+import { getSanityClient } from "./client";
 
 const DEFAULT_PARAMS = {} as QueryParams;
 const DEFAULT_TAGS = [] as string[];
@@ -25,6 +25,16 @@ export async function sanityFetch<QueryResponse>({
     );
   }
   const isDevelopment = process.env.NODE_ENV === "development";
+
+  let client;
+  try {
+    client = getSanityClient();
+  } catch (err) {
+    throw new Error(
+      "Sanity client not configured: " +
+        (err instanceof Error ? err.message : String(err)),
+    );
+  }
 
   return client
     .withConfig({ useCdn: true })

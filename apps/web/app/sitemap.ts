@@ -23,6 +23,13 @@ async function getBlogPosts() {
       lastModified: new Date(post.date),
     }));
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.includes("Sanity client not configured")
+    ) {
+      // Sanity is not configured, skip blog posts
+      return [];
+    }
     console.error("Error fetching blog posts from Sanity:", error);
     return [];
   }
