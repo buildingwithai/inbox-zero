@@ -4,17 +4,28 @@ import type { MetadataRoute } from "next";
 import { unstable_noStore } from "next/cache";
 
 async function getBlogPosts() {
-  // Skip Sanity fetch during build with dummy credentials
-  if (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID === "project123") {
-    return []; // Return empty array directly
+  // Skip Sanity fetch if not properly configured
+  if (
+    !process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ||
+    !process.env.NEXT_PUBLIC_SANITY_DATASET ||
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID === "project123"
+  ) {
+    console.log("Skipping Sanity fetch - configuration not set");
+    return [];
   }
-  const posts = await sanityFetch<{ slug: string; date: string }[]>({
-    query: postSlugsQuery,
-  });
-  return posts.map((post) => ({
-    url: `https://www.getinboxzero.com/blog/post/${post.slug}`,
-    lastModified: new Date(post.date),
-  }));
+
+  try {
+    const posts = await sanityFetch<{ slug: string; date: string }[]>({
+      query: postSlugsQuery,
+    });
+    return posts.map((post) => ({
+      url: `https://www.getinboxzero.com/blog/post/${post.slug}`,
+      lastModified: new Date(post.date),
+    }));
+  } catch (error) {
+    console.error("Error fetching blog posts from Sanity:", error);
+    return [];
+  }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
