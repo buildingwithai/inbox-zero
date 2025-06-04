@@ -452,3 +452,5 @@ The `PrismaClientInitializationError` clearly indicates that the Next.js applica
 4.  **Prisma Generate:** Run `npx prisma generate` in `apps/web` to ensure the Prisma Client is up-to-date with the schema, though this is less likely the cause if the server isn't reachable.
 
 **Status:** Pending verification of database container status and `DATABASE_URL`.
+
+One of the errors we're having was because we had the sanity URL or ID, and it's for a blog so that we can write articles. The site map was trying to find it, but I got rid of it.
