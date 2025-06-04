@@ -441,15 +441,15 @@ The `PrismaClientInitializationError` clearly indicates that the Next.js applica
 
 **Proposed Next Steps:**
 
-1.  **Verify PostgreSQL Docker Container Status:**
-    - Ensure the PostgreSQL Docker container (e.g., `inbox-zero-db-1`) is running.
-    - Confirm correct port mapping (host `5432` to container `5432`).
-    - Inspect Docker container logs for database-specific errors.
-2.  **Verify `DATABASE_URL` in `.env`:**
-    - Ensure `DATABASE_URL` in `apps/web/.env` is correctly formatted and points to `localhost:5432` with valid credentials.
-    - Example: `postgresql://user:password@localhost:5432/mydatabase?schema=public`
-3.  **Network/Firewall:** Ensure no local firewall is blocking connections to `localhost:5432`.
-4.  **Prisma Generate:** Run `npx prisma generate` in `apps/web` to ensure the Prisma Client is up-to-date with the schema, though this is less likely the cause if the server isn't reachable.
+1. **Verify PostgreSQL Docker Container Status:**
+   - Ensure the PostgreSQL Docker container (e.g., `inbox-zero-db-1`) is running.
+   - Confirm correct port mapping (host `5432` to container `5432`).
+   - Inspect Docker container logs for database-specific errors.
+2. **Verify `DATABASE_URL` in `.env`:**
+   - Ensure `DATABASE_URL` in `apps/web/.env` is correctly formatted and points to `localhost:5432` with valid credentials.
+   - Example: `postgresql://user:password@localhost:5432/mydatabase?schema=public`
+3. **Network/Firewall:** Ensure no local firewall is blocking connections to `localhost:5432`.
+4. **Prisma Generate:** Run `npx prisma generate` in `apps/web` to ensure the Prisma Client is up-to-date with the schema, though this is less likely the cause if the server isn't reachable.
 
 **Status:** Pending verification of database container status and `DATABASE_URL`.
 
