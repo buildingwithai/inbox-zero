@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { clearUserErrorMessagesAction } from "@/utils/actions/error-messages";
 import { getUserErrorMessages } from "@/utils/error-messages";
 
+// eslint-disable-next-line @next/next/no-duplicate-head
 export async function ErrorMessages() {
   const session = await auth();
   if (!session?.user) return null;
