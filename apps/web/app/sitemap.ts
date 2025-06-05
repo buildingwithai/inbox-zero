@@ -1,45 +1,23 @@
-import { sanityFetch } from "@/sanity/lib/fetch";
-import { postSlugsQuery } from "@/sanity/lib/queries";
+// BLOG/SANITY DISABLED: import { sanityFetch } from "@/sanity/lib/fetch";
+// BLOG/SANITY DISABLED: import { postSlugsQuery } from "@/sanity/lib/queries";
 import type { MetadataRoute } from "next";
 import { unstable_noStore } from "next/cache";
 
-async function getBlogPosts() {
-  // Skip Sanity fetch if not properly configured
-  if (
-    !process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ||
-    !process.env.NEXT_PUBLIC_SANITY_DATASET ||
-    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID === "project123"
-  ) {
-    console.log("Skipping Sanity fetch - configuration not set");
-    return [];
-  }
+// BLOG/SANITY DISABLED: async function getBlogPosts() {
+// BLOG/SANITY DISABLED: Skip Sanity fetch if not properly configured
+// BLOG/SANITY DISABLED: Sanity/blog config check removed
+// return [];
 
-  try {
-    const posts = await sanityFetch<{ slug: string; date: string }[]>({
-      query: postSlugsQuery,
-    });
-    return posts.map((post) => ({
-      url: `https://www.getinboxzero.com/blog/post/${post.slug}`,
-      lastModified: new Date(post.date),
-    }));
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message.includes("Sanity client not configured")
-    ) {
-      // Sanity is not configured, skip blog posts
-      return [];
-    }
-    console.error("Error fetching blog posts from Sanity:", error);
-    return [];
-  }
-}
+// BLOG/SANITY DISABLED: Blog post fetch and error handling removed
+// return [];
+// }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // to try fix caching issue: https://github.com/vercel/next.js/discussions/56708#discussioncomment-10127496
   unstable_noStore();
 
-  const blogPosts = await getBlogPosts();
+  // BLOG/SANITY DISABLED: const blogPosts = await getBlogPosts();
+  const blogPosts = [];
 
   const staticUrls = [
     {
@@ -64,30 +42,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: "https://www.getinboxzero.com/terms",
     },
-    {
-      url: "https://www.getinboxzero.com/blog",
-      changeFrequency: "daily",
-      lastModified: new Date(),
-      priority: 1,
-    },
-    {
-      url: "https://www.getinboxzero.com/blog/post/how-my-open-source-saas-hit-first-on-product-hunt",
-    },
-    {
-      url: "https://www.getinboxzero.com/blog/post/why-build-an-open-source-saas",
-    },
-    {
-      url: "https://www.getinboxzero.com/blog/post/alternatives-to-skiff-mail",
-    },
-    {
-      url: "https://www.getinboxzero.com/blog/post/best-email-unsubscribe-app",
-    },
-    {
-      url: "https://www.getinboxzero.com/blog/post/bulk-unsubscribe-from-emails",
-    },
-    {
-      url: "https://www.getinboxzero.com/blog/post/escape-email-trap-unsubscribe-for-good",
-    },
+    // {
+    //   // BLOG/SANITY DISABLED: url: "https://www.getinboxzero.com/blog",
+    //   changeFrequency: "daily",
+    //   lastModified: new Date(),
+    //   priority: 1,
+    // },
+    // {
+    //   // BLOG/SANITY DISABLED: url: "https://www.getinboxzero.com/blog/post/how-my-open-source-saas-hit-first-on-product-hunt",
+    // },
+    // {
+    //   // BLOG/SANITY DISABLED: url: "https://www.getinboxzero.com/blog/post/why-build-an-open-source-saas",
+    // },
+    // {
+    //   // BLOG/SANITY DISABLED: url: "https://www.getinboxzero.com/blog/post/alternatives-to-skiff-mail",
+    // },
+    // {
+    //   // BLOG/SANITY DISABLED: url: "https://www.getinboxzero.com/blog/post/best-email-unsubscribe-app",
+    // },
+    // {
+    //   // BLOG/SANITY DISABLED: url: "https://www.getinboxzero.com/blog/post/bulk-unsubscribe-from-emails",
+    // },
+    // {
+    //   // BLOG/SANITY DISABLED: url: "https://www.getinboxzero.com/blog/post/escape-email-trap-unsubscribe-for-good",
+    // },
     {
       url: "https://docs.getinboxzero.com/",
     },
@@ -105,5 +83,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  return [...staticUrls, ...blogPosts];
+  // BLOG/SANITY DISABLED: Only staticUrls remain
+  return [...staticUrls];
 }

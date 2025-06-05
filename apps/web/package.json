@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--max_old_space_size=16384 next dev",
     "check-env": "node scripts/check-env.js",
-    "build": "cross-env NODE_OPTIONS=--max_old_space_size=16384 npm run check-env && prisma migrate deploy && next build",
+    "build": "npm run check-env && cross-env PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK=1 NODE_OPTIONS=--max_old_space_size=16384 prisma migrate deploy && cross-env NODE_OPTIONS=--max_old_space_size=16384 next build",
     "start": "next start",
     "lint": "next lint",
     "test": "cross-env RUN_AI_TESTS=false vitest",

@@ -1,3 +1,4 @@
+/*
 import "server-only";
 
 import type { QueryParams } from "@sanity/client";
@@ -50,3 +51,4 @@ export async function sanityFetch<QueryResponse>({
       },
     });
 }
+*/
